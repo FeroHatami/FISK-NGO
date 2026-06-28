@@ -20,6 +20,23 @@ Built for the **AI For Good Hackathon** — with AWS embedded as the core intell
 8. [Setup & running locally](#setup--running-locally)
 9. [Configuration](#configuration)
 10. [Project structure](#project-structure)
+11. [Documentation](#documentation)
+
+---
+
+## Documentation
+
+Full technical documentation lives in [`docs/`](docs/):
+
+| Doc | Contents |
+|-----|----------|
+| [docs/AWS_BEDROCK.md](docs/AWS_BEDROCK.md) | Deep-dive on the Amazon Bedrock integration: Nova model tiers, inference profiles, native API format, fallback, JSON hardening, troubleshooting |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture, the two subsystems, caching, resilience |
+| [docs/PIPELINE.md](docs/PIPELINE.md) | Data sources and the full ingestion → extraction → export pipeline |
+| [docs/AI_PROMPTS.md](docs/AI_PROMPTS.md) | Every AI prompt, its job, model tier, and the retrieval/grounding design |
+| [docs/API.md](docs/API.md) | Full REST/JSON API reference with request/response examples |
+| [docs/DATA_MODEL.md](docs/DATA_MODEL.md) | Item schema, 9-category taxonomy, regions, priority vs. urgency |
+| [docs/FRONTEND.md](docs/FRONTEND.md) | React app: routes, components, data fetching, i18n |
 
 ---
 
@@ -288,7 +305,13 @@ FISK/
 ├── README.md                       # this file
 ├── run_all.py                      # full-pipeline orchestrator
 ├── docs/
-│   └── AWS_BEDROCK.md              # deep-dive on the Bedrock integration
+│   ├── AWS_BEDROCK.md              # deep-dive on the Bedrock integration
+│   ├── ARCHITECTURE.md             # system architecture
+│   ├── PIPELINE.md                 # data + AI pipeline
+│   ├── AI_PROMPTS.md               # prompt & reasoning design
+│   ├── API.md                      # REST/JSON API reference
+│   ├── DATA_MODEL.md               # item schema & taxonomy
+│   └── FRONTEND.md                 # React app structure
 │
 ├── Python pipeline/                # data + AI engine
 │   ├── bedrock_llm.py              # Bedrock client (Nova Lite) + OpenAI fallback
