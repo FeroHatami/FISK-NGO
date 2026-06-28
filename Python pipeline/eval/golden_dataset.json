@@ -1,0 +1,202 @@
+{
+  "_comment": "Hand-labeled golden set for the Press Review & Funding Monitor. 'as_of' fixes the reference date so deterministic funding urgency is reproducible. Categories must be one of the 9 values in ARCHITECTURE.md section 6.",
+  "as_of": "2026-06-27",
+  "threshold": 0.8,
+  "cases": [
+    {
+      "id": "news-01",
+      "content_type": "news",
+      "input": {
+        "source": "Iwacu English News",
+        "source_lang": "en",
+        "title": "Suspected rabies outbreak near Lake Tanganyika",
+        "full_text": "Local authorities are considering quarantine measures after a suspected outbreak of canine rabies was reported in communities near Lake Tanganyika. Vaccination teams have been requested."
+      },
+      "expected": {
+        "category": "Stray Population Infrastructure",
+        "urgency": "high",
+        "locations": ["Lake Tanganyika"]
+      }
+    },
+    {
+      "id": "news-02",
+      "content_type": "news",
+      "input": {
+        "source": "Burundi-Eco",
+        "source_lang": "fr",
+        "title": "Inondations majeures a Bujumbura",
+        "full_text": "Des inondations majeures ont frappe les bas-quartiers de Bujumbura apres des pluies torrentielles, detruisant des infrastructures et deplacant des familles."
+      },
+      "expected": {
+        "category": "Emergency Relief Hub",
+        "urgency": "high",
+        "locations": ["Bujumbura"]
+      }
+    },
+    {
+      "id": "news-03",
+      "content_type": "news",
+      "input": {
+        "source": "Iwacu English News",
+        "source_lang": "en",
+        "title": "Annual report: rural primary education",
+        "full_text": "An annual report on rural primary education in Burundi notes a 5 percent increase in the literacy rate over the past year, attributed to expanded school programs."
+      },
+      "expected": {
+        "category": "Bildung",
+        "urgency": "low",
+        "locations": ["Burundi"]
+      }
+    },
+    {
+      "id": "news-04",
+      "content_type": "news",
+      "input": {
+        "source": "Yaga Burundi",
+        "source_lang": "fr",
+        "title": "Reseau de trafic d'especes sauvages demantele",
+        "full_text": "Un reseau de trafic illegal d'especes sauvages a ete detecte aux postes frontaliers de la region des Grands Lacs. Plusieurs animaux proteges ont ete saisis."
+      },
+      "expected": {
+        "category": "Wildlife Trade Defenses",
+        "urgency": "high",
+        "locations": ["Great Lakes Region"]
+      }
+    },
+    {
+      "id": "news-05",
+      "content_type": "news",
+      "input": {
+        "source": "Radio Isanganiro",
+        "source_lang": "fr",
+        "title": "Hausse des cas de paludisme a Karuzi",
+        "full_text": "Les cas confirmes de paludisme sont en forte hausse dans la province de Karuzi, avec une penurie critique de traitements antipaludiques de base signalee par les centres de sante."
+      },
+      "expected": {
+        "category": "Gesundheit",
+        "urgency": "high",
+        "locations": ["Karuzi"]
+      }
+    },
+    {
+      "id": "news-06",
+      "content_type": "news",
+      "input": {
+        "source": "Iwacu English News",
+        "source_lang": "en",
+        "title": "Routine road repairs planned in Gitega",
+        "full_text": "The municipality announced routine road resurfacing works scheduled for next quarter in Gitega, part of regular maintenance with no expected disruption to services."
+      },
+      "expected": {
+        "category": "Kommunale Entwicklung und Umweltschutz",
+        "urgency": "low",
+        "locations": ["Gitega"]
+      }
+    },
+    {
+      "id": "news-07",
+      "content_type": "news",
+      "input": {
+        "source": "Yaga Burundi",
+        "source_lang": "fr",
+        "title": "Violences signalees pres des camps frontaliers",
+        "full_text": "Des cas de violences basees sur le genre ont ete signales pres des camps temporaires a la frontiere, suscitant l'inquietude des organisations humanitaires."
+      },
+      "expected": {
+        "category": "Kinder- und Frauenrechte",
+        "urgency": "high",
+        "locations": ["Burundi"]
+      }
+    },
+    {
+      "id": "fund-01",
+      "content_type": "funding",
+      "input": {
+        "source": "Foerderdatenbank Entwicklungslaender",
+        "source_lang": "de",
+        "title": "Kleinprojektfoerderung Ostafrika",
+        "raw_text": "Kleinprojektfoerderung Ostafrika. Maximale Projektsumme: 50.000 EUR. Einreichungsfrist: 10. Juli 2026. Antragsberechtigt sind deutsche Vereine."
+      },
+      "expected": {
+        "category": "Uncategorized",
+        "deadline": "2026-07-10",
+        "amount": "50.000 EUR",
+        "urgency": "high",
+        "eligibility_nonempty": true,
+        "locations": ["Ostafrika"]
+      }
+    },
+    {
+      "id": "fund-02",
+      "content_type": "funding",
+      "input": {
+        "source": "Foerderkompass",
+        "source_lang": "de",
+        "title": "Projekte gegen geschlechtsspezifische Gewalt",
+        "raw_text": "Foerderung von Projekten zur Bekaempfung geschlechtsspezifischer Gewalt in Ostafrika. Maximalbudget: 80.000 EUR. Frist: 15. August 2026."
+      },
+      "expected": {
+        "category": "Kinder- und Frauenrechte",
+        "deadline": "2026-08-15",
+        "amount": "80.000 EUR",
+        "urgency": "medium",
+        "eligibility_nonempty": true,
+        "locations": ["Ostafrika"]
+      }
+    },
+    {
+      "id": "fund-03",
+      "content_type": "funding",
+      "input": {
+        "source": "Foerderdatenbank Entwicklungslaender",
+        "source_lang": "en",
+        "title": "BMZ call for maternal health programs",
+        "raw_text": "Federal Ministry for Economic Cooperation and Development (BMZ): call for proposals for maternal health programs. Up to 150,000 EUR. Due date: 2026-11-15."
+      },
+      "expected": {
+        "category": "Gesundheit",
+        "deadline": "2026-11-15",
+        "amount": "150.000 EUR",
+        "urgency": "low",
+        "eligibility_nonempty": true,
+        "locations": ["East Africa"]
+      }
+    },
+    {
+      "id": "fund-04",
+      "content_type": "funding",
+      "input": {
+        "source": "Foerderkompass",
+        "source_lang": "de",
+        "title": "Laufende Kleinprojektfoerderung Bildung",
+        "raw_text": "Laufende Kleinprojektfoerderung im Bereich Bildung. Foerderung bis 2.500 EUR. Bewerbung laufend moeglich, keine feste Frist."
+      },
+      "expected": {
+        "category": "Bildung",
+        "deadline": null,
+        "amount": "2.500 EUR",
+        "urgency": "undefined",
+        "eligibility_nonempty": true,
+        "locations": []
+      }
+    },
+    {
+      "id": "fund-05",
+      "content_type": "funding",
+      "input": {
+        "source": "Foerderdatenbank Entwicklungslaender",
+        "source_lang": "de",
+        "title": "Soforthilfe Katastrophenschutz Ostafrika",
+        "raw_text": "Soforthilfefonds fuer Katastrophenschutz in Ostafrika. Antraege bis 200.000 EUR moeglich. Frist: 25. Juli 2026."
+      },
+      "expected": {
+        "category": "Emergency Relief Hub",
+        "deadline": "2026-07-25",
+        "amount": "200.000 EUR",
+        "urgency": "high",
+        "eligibility_nonempty": true,
+        "locations": ["Ostafrika"]
+      }
+    }
+  ]
+}

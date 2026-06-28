@@ -1,0 +1,309 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* One family across the entire product */
+  --font-sans: "Geist", "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif;
+  --font-serif: var(--font-sans);
+
+  /* Unified radius scale (8px system) */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 28px;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-hairline: var(--hairline);
+
+  --color-priority-high: var(--priority-high);
+  --color-priority-high-soft: var(--priority-high-soft);
+  --color-priority-med: var(--priority-med);
+  --color-priority-med-soft: var(--priority-med-soft);
+  --color-priority-low: var(--priority-low);
+  --color-priority-low-soft: var(--priority-low-soft);
+}
+
+:root {
+  --radius: 12px;
+
+  /* Warm editorial palette — cream paper, vibrant coral, soft pink */
+  --background: oklch(0.97 0.012 80);
+  --surface: oklch(0.97 0.012 80);
+  --surface-elevated: oklch(0.995 0.004 80);
+  --foreground: oklch(0.22 0.015 50);
+
+  --ink: oklch(0.22 0.015 50);
+  --ink-soft: oklch(0.46 0.018 55);
+  --ink-faint: oklch(0.64 0.015 60);
+  --hairline: oklch(0.9 0.012 60);
+
+  --card: oklch(0.995 0.004 80);
+  --card-foreground: var(--ink);
+  --popover: oklch(0.995 0.004 80);
+  --popover-foreground: var(--ink);
+
+  --primary: oklch(0.62 0.20 35);
+  --primary-foreground: oklch(0.985 0.005 80);
+  --secondary: oklch(0.94 0.04 20);
+  --secondary-foreground: var(--ink);
+  --muted: oklch(0.95 0.012 70);
+  --muted-foreground: var(--ink-soft);
+  --accent: oklch(0.90 0.06 25);
+  --accent-foreground: oklch(0.32 0.12 35);
+
+  --destructive: oklch(0.58 0.20 28);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: var(--hairline);
+  --input: var(--hairline);
+  --ring: oklch(0.62 0.20 35);
+
+  /* Priority — coral accent + soft pink tones */
+  --priority-high: oklch(0.62 0.20 35);
+  --priority-high-soft: oklch(0.92 0.06 25);
+  --priority-med: oklch(0.78 0.10 60);
+  --priority-med-soft: oklch(0.95 0.04 60);
+  --priority-low: oklch(0.72 0.02 60);
+  --priority-low-soft: oklch(0.94 0.012 70);
+}
+
+.dark {
+  --background: oklch(0.18 0.012 50);
+  --surface: oklch(0.18 0.012 50);
+  --surface-elevated: oklch(0.22 0.012 50);
+  --foreground: oklch(0.96 0.005 80);
+
+  --ink: oklch(0.96 0.005 80);
+  --ink-soft: oklch(0.78 0.01 70);
+  --ink-faint: oklch(0.6 0.01 70);
+  --hairline: oklch(1 0 0 / 10%);
+
+  --card: oklch(0.22 0.012 50);
+  --popover: oklch(0.22 0.012 50);
+
+  --primary: oklch(0.72 0.16 40);
+  --secondary: oklch(0.28 0.02 50);
+  --muted: oklch(0.28 0.02 50);
+  --accent: oklch(0.32 0.04 40);
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.72 0.16 40);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { font-size: 15px; }
+  html, body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01", "ss03";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.005em;
+    line-height: 1.55;
+  }
+
+  /* Single heading hierarchy — used everywhere */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    line-height: 1.2;
+  }
+
+  /* Kill any leftover serif callers — map to sans */
+  .font-serif {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ===== Unified Design System utilities ===== */
+
+/* Page container — every page uses this */
+@utility page {
+  padding-inline: 2rem;     /* 32px */
+  padding-block: 2.5rem;    /* 40px */
+  max-width: 56rem;         /* 896px */
+  width: 100%;
+}
+@utility page-wide {
+  padding-inline: 2rem;
+  padding-block: 2.5rem;
+  max-width: 72rem;
+  width: 100%;
+}
+
+/* Typography scale — used across all pages */
+@utility h1-page {
+  font-size: 1.5rem;        /* 24px */
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--color-ink);
+}
+@utility h2-section {
+  font-size: 1.0625rem;     /* 17px */
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+@utility h3-card {
+  font-size: 0.9375rem;     /* 15px */
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  color: var(--color-ink);
+}
+@utility h4-meta {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+@utility eyebrow {
+  font-size: 0.6875rem;       /* 11px */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  color: var(--color-ink-faint);
+}
+@utility body-text {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-ink-soft);
+}
+
+/* Card — single look across the product */
+@utility card-surface {
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-hairline);
+  border-radius: 16px;
+  padding: 1.25rem; /* 20px */
+}
+
+/* Buttons */
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 36px;
+  padding-inline: 1rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background-color: var(--color-ink);
+  color: var(--color-background);
+  transition: opacity 150ms ease;
+  &:hover { opacity: 0.9; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+@utility btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 36px;
+  padding-inline: 1rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  background-color: var(--color-surface-elevated);
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+  transition: all 150ms ease;
+  &:hover { border-color: color-mix(in oklab, var(--color-ink) 20%, transparent); }
+}
+@utility btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 36px;
+  padding-inline: 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-ink-soft);
+  background: transparent;
+  transition: all 150ms ease;
+  &:hover { background-color: var(--color-muted); color: var(--color-ink); }
+}
+
+/* Badge — one shape, color varies via modifier classes on the element */
+@utility badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+/* Hairlines */
+@utility hairline-b { border-bottom: 1px solid var(--color-hairline); }
+@utility hairline-t { border-top: 1px solid var(--color-hairline); }
+@utility hairline-r { border-right: 1px solid var(--color-hairline); }
+
+/* Leaflet hover tooltip for map markers */
+.lumen-map-tooltip.leaflet-tooltip {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  padding: 7px 9px;
+  color: #1a1a1a;
+  font-family: var(--font-sans);
+  line-height: 1.3;
+  white-space: normal;
+  max-width: 180px;
+}
+
+.lumen-map-tooltip.leaflet-tooltip-top::before {
+  border-top-color: #ffffff;
+}
+.lumen-map-tooltip.leaflet-tooltip-bottom::before {
+  border-bottom-color: #ffffff;
+}
+.lumen-map-tooltip.leaflet-tooltip-left::before {
+  border-left-color: #ffffff;
+}
+.lumen-map-tooltip.leaflet-tooltip-right::before {
+  border-right-color: #ffffff;
+}

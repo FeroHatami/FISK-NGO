@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burundi Press Review Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f6f8; color: #333; }
+        .site-header { background: #1a1a2e; color: #fff; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .site-header h1 { font-size: 20px; font-weight: 600; }
+        .lang-toggle { display: flex; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.3); }
+        .lang-toggle button { padding: 6px 14px; border: none; background: transparent; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 13px; font-weight: 500; }
+        .lang-toggle button.active { background: rgba(255,255,255,0.2); color: #fff; }
+        .top-nav { display: flex; background: #16213e; padding: 0 24px; }
+        .top-nav-btn { padding: 12px 24px; border: none; background: transparent; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 15px; font-weight: 500; border-bottom: 3px solid transparent; }
+        .top-nav-btn.active { color: #fff; border-bottom-color: #4fc3f7; }
+        .sub-nav { display: flex; background: #f0f0f0; padding: 0 24px; border-bottom: 1px solid #ddd; }
+        .sub-nav-btn { padding: 10px 20px; border: none; background: transparent; cursor: pointer; font-size: 14px; color: #555; border-bottom: 2px solid transparent; }
+        .sub-nav-btn.active { color: #1a1a2e; border-bottom-color: #1a1a2e; font-weight: 600; }
+        .main-content { padding: 24px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        #map-wrap { margin-bottom: 24px; }
+        #map { width: 100%; height: 380px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .legend { display: flex; gap: 16px; justify-content: center; margin-bottom: 16px; font-size: 13px; }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-dot { width: 14px; height: 14px; border-radius: 50%; }
+        .legend-dot.high { background: #e53935; } .legend-dot.medium { background: #fb8c00; } .legend-dot.low { background: #9e9e9e; }
+        .cat-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; justify-content: center; }
+        .cat-btn { padding: 8px 16px; border: 1px solid #ddd; border-radius: 20px; background: #fff; cursor: pointer; font-size: 13px; }
+        .cat-btn.active { background: #1a1a2e; color: #fff; border-color: #1a1a2e; }
+        .cat-btn .count { background: rgba(0,0,0,0.1); border-radius: 10px; padding: 2px 7px; margin-left: 5px; font-size: 11px; }
+        .cat-btn.active .count { background: rgba(255,255,255,0.2); }
+        .cat-content { display: none; } .cat-content.active { display: block; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border-left: 5px solid #ccc; transition: transform 0.15s; }
+        .card:hover { transform: translateY(-2px); }
+        .card.urgency-high { border-left-color: #e53935; background: #fff5f5; }
+        .card.urgency-medium { border-left-color: #fb8c00; background: #fffbf0; }
+        .card.urgency-low { border-left-color: #9e9e9e; }
+        .card.urgency-undefined { border-left-color: #b0bec5; background: #fafafa; }
+        .card-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; line-height: 1.3; }
+        .card-title a { color: #1a1a2e; text-decoration: none; } .card-title a:hover { text-decoration: underline; }
+        .card-gist { color: #555; margin-bottom: 8px; font-size: 14px; line-height: 1.5; }
+        .card-keypoints { margin: 8px 0; padding-left: 18px; }
+        .card-keypoints li { font-size: 13px; color: #444; margin-bottom: 4px; }
+        .card-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; font-size: 12px; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; }
+        .badge-source { background: #e3f2fd; color: #1565c0; }
+        .badge-email-source { background: #fce4ec; color: #880e4f; font-weight: 600; }
+        .badge-alert-topic { background: #f3e5f5; color: #6a1b9a; }
+        .badge-funding { background: #ede7f6; color: #4527a0; }
+        .badge-urgency-high { background: #ffcdd2; color: #b71c1c; }
+        .badge-urgency-medium { background: #ffe0b2; color: #e65100; }
+        .badge-urgency-low { background: #e0e0e0; color: #424242; }
+        .badge-urgency-undefined { background: #eceff1; color: #546e7a; }
+        .badge-location { background: #e8f5e9; color: #2e7d32; }
+        .badge-deadline { background: #fff3e0; color: #bf360c; }
+        .badge-amount { background: #e8f5e9; color: #1b5e20; }
+        .urgency-reason { font-size: 12px; color: #888; font-style: italic; margin-top: 6px; }
+        .funding-detail { font-size: 13px; color: #555; margin: 4px 0; } .funding-detail strong { color: #333; }
+        .contact-info { font-size: 12px; color: #1565c0; margin-top: 6px; }
+        .card-action { display: inline-block; margin-top: 10px; padding: 6px 14px; background: #1a1a2e; color: #fff; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 500; }
+        .card-action:hover { background: #2d2d5e; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+        [data-lang="de"] { display: none; }
+        body.show-de [data-lang="de"] { display: block; }
+        body.show-de [data-lang="en"] { display: none; }
+        @keyframes cardPulse { 0%{box-shadow:0 0 0 0 rgba(79,195,247,0.7)} 70%{box-shadow:0 0 0 12px rgba(79,195,247,0)} 100%{box-shadow:0 0 0 0 rgba(79,195,247,0)} }
+        .card-highlight { animation: cardPulse 0.8s ease-out 3; outline: 3px solid #4fc3f7; }
+        .marker-popup { max-width: 280px; max-height: 200px; overflow-y: auto; font-size: 12px; }
+        .marker-popup .popup-item { padding: 4px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .marker-popup .popup-item:last-child { border-bottom: none; }
+        .marker-popup .popup-title { font-weight: 600; color: #1a1a2e; font-size: 12px; }
+        .marker-popup .popup-gist { color: #666; font-size: 11px; margin-top: 2px; }
+    </style>
+</head>
+<body>
+    <header class="site-header"><h1>Burundi Press Review</h1><div class="lang-toggle"><button id="btn-en" class="active" onclick="setLang('en')">EN</button><button id="btn-de" onclick="setLang('de')">DE</button></div></header>
+    <nav class="top-nav"><button class="top-nav-btn active" onclick="switchTop('news',this)">📰 News</button><button class="top-nav-btn" onclick="switchTop('funding',this)">💰 Funding</button></nav>
+    <div class="sub-nav" id="subnav-news"><button class="sub-nav-btn active" onclick="switchSub('news','articles',this)">Articles</button><button class="sub-nav-btn" onclick="switchSub('news','email',this)">Email</button></div>
+    <div class="sub-nav" id="subnav-funding" style="display:none"><button class="sub-nav-btn active" onclick="switchSub('funding','scraped',this)">Scraped</button><button class="sub-nav-btn" onclick="switchSub('funding','email',this)">Email</button></div>
+    <div class="main-content">
+    <!-- MAP (shared across News sub-tabs) -->
+    <div id="map-wrap"><div class="legend"><div class="legend-item"><div class="legend-dot high"></div> High</div><div class="legend-item"><div class="legend-dot medium"></div> Medium</div><div class="legend-item"><div class="legend-dot low"></div> Low</div></div><div id="map"></div></div>
+    <!-- NEWS > ARTICLES -->
+    <div class="section active" id="sec-news-articles">
+        <div class="cat-tabs" id="tabs-news-articles">{% for cat in categories %}<button class="cat-btn {% if loop.first %}active{% endif %}" onclick="switchCat('news-articles',{{loop.index0}},this)">{{cat}}<span class="count">{{news_article_counts[cat]}}</span></button>{% endfor %}</div>
+        {% for cat in categories %}
+        <div class="cat-content news-articles-cat {% if loop.first %}active{% endif %}" id="news-articles-cat-{{loop.index0}}">
+            {% if grouped[cat].news.articles %}<div class="cards">{% for card in grouped[cat].news.articles %}
+                <div class="card urgency-{{card.urgency}}" id="{{card.dom_id}}" data-category="{{card.category}}" data-locations="{{card.locations|join(',')|lower}}">
+                    <div class="card-title"><a href="{{card.link}}" target="_blank" rel="noopener">{{card.title}}</a></div>
+                    <div class="card-gist" data-lang="en">{{card.gist_en}}</div><div class="card-gist" data-lang="de">{{card.gist_de}}</div>
+                    {% if card.key_points_en %}<ul class="card-keypoints" data-lang="en">{% for p in card.key_points_en %}<li>{{p}}</li>{% endfor %}</ul>{% endif %}
+                    {% if card.key_points_de %}<ul class="card-keypoints" data-lang="de">{% for p in card.key_points_de %}<li>{{p}}</li>{% endfor %}</ul>{% endif %}
+                    {% if card.urgency_reason %}<div class="urgency-reason">Urgency: {{card.urgency_reason}}</div>{% endif %}
+                    {% if card.contact_email or card.contact_phone %}<div class="contact-info">📞 Contact: {{card.contact_email}}{% if card.contact_email and card.contact_phone %} · {% endif %}{{card.contact_phone}}</div>{% endif %}
+                    <div class="card-meta"><span class="badge badge-source">{{card.source}}</span><span class="badge badge-urgency-{{card.urgency}}">{{card.urgency}}</span>{% for loc in card.locations %}<span class="badge badge-location">{{loc}}</span>{% endfor %}</div>
+                    <a href="{{card.link}}" target="_blank" rel="noopener" class="card-action">Read article →</a>
+                </div>{% endfor %}</div>
+            {% else %}<div class="empty-state">No articles in this category.</div>{% endif %}
+        </div>{% endfor %}
+    </div>
+
+    <!-- NEWS > EMAIL -->
+    <div class="section" id="sec-news-email">
+        <div class="cat-tabs" id="tabs-news-email">{% for cat in categories %}<button class="cat-btn {% if loop.first %}active{% endif %}" onclick="switchCat('news-email',{{loop.index0}},this)">{{cat}}<span class="count">{{news_email_counts[cat]}}</span></button>{% endfor %}</div>
+        {% for cat in categories %}
+        <div class="cat-content news-email-cat {% if loop.first %}active{% endif %}" id="news-email-cat-{{loop.index0}}">
+            {% if grouped[cat].news.email %}<div class="cards">{% for card in grouped[cat].news.email %}
+                <div class="card urgency-{{card.urgency}}" id="{{card.dom_id}}" data-category="{{card.category}}" data-locations="{{card.locations|join(',')|lower}}">
+                    <div class="card-title"><a href="{{card.link}}" target="_blank" rel="noopener">{{card.title}}</a></div>
+                    <div class="card-gist" data-lang="en">{{card.gist_en}}</div><div class="card-gist" data-lang="de">{{card.gist_de}}</div>
+                    {% if card.key_points_en %}<ul class="card-keypoints" data-lang="en">{% for p in card.key_points_en %}<li>{{p}}</li>{% endfor %}</ul>{% endif %}
+                    {% if card.key_points_de %}<ul class="card-keypoints" data-lang="de">{% for p in card.key_points_de %}<li>{{p}}</li>{% endfor %}</ul>{% endif %}
+                    {% if card.urgency_reason %}<div class="urgency-reason">Urgency: {{card.urgency_reason}}</div>{% endif %}
+                    {% if card.contact_email or card.contact_phone %}<div class="contact-info">📞 Contact: {{card.contact_email}}{% if card.contact_email and card.contact_phone %} · {% endif %}{{card.contact_phone}}</div>{% endif %}
+                    <div class="card-meta"><span class="badge badge-email-source">From: {{card.source}}</span>{% if card.alert_topic %}<span class="badge badge-alert-topic">{{card.alert_topic}}</span>{% endif %}<span class="badge badge-urgency-{{card.urgency}}">{{card.urgency}}</span>{% for loc in card.locations %}<span class="badge badge-location">{{loc}}</span>{% endfor %}</div>
+                    <a href="{{card.link}}" target="_blank" rel="noopener" class="card-action">Read article →</a>
+                </div>{% endfor %}</div>
+            {% else %}<div class="empty-state">No email-sourced articles in this category.</div>{% endif %}
+        </div>{% endfor %}
+    </div>
+    <!-- FUNDING > SCRAPED -->
+    <div class="section" id="sec-funding-scraped">
+        <div class="cat-tabs" id="tabs-funding-scraped">{% for cat in categories %}<button class="cat-btn {% if loop.first %}active{% endif %}" onclick="switchCat('funding-scraped',{{loop.index0}},this)">{{cat}}<span class="count">{{funding_scraped_counts[cat]}}</span></button>{% endfor %}</div>
+        {% for cat in categories %}
+        <div class="cat-content funding-scraped-cat {% if loop.first %}active{% endif %}" id="funding-scraped-cat-{{loop.index0}}">
+            {% if grouped[cat].funding.scraped %}<div class="cards">{% for card in grouped[cat].funding.scraped %}
+                <div class="card urgency-{{card.urgency}}" id="{{card.dom_id}}" data-category="{{card.category}}" data-locations="{{card.locations|join(',')|lower}}">
+                    <div class="card-title">{% if card.link %}<a href="{{card.link}}" target="_blank" rel="noopener">{{card.title}}</a>{% else %}{{card.title}}{% endif %}</div>
+                    <div class="card-gist" data-lang="en">{{card.summary_en}}</div><div class="card-gist" data-lang="de">{{card.summary_de}}</div>
+                    {% if card.deadline %}<div class="funding-detail"><strong>Deadline:</strong> {{card.deadline}}</div>{% endif %}
+                    {% if card.amount %}<div class="funding-detail"><strong>Amount:</strong> {{card.amount}}</div>{% endif %}
+                    {% if card.eligibility_en %}<ul class="card-keypoints" data-lang="en">{% for p in card.eligibility_en %}<li>{{p}}</li>{% endfor %}</ul>{% endif %}
+                    {% if card.eligibility_de %}<ul class="card-keypoints" data-lang="de">{% for p in card.eligibility_de %}<li>{{p}}</li>{% endfor %}</ul>{% endif %}
+                    {% if card.contact_email or card.contact_phone %}<div class="contact-info">📞 Contact: {{card.contact_email}}{% if card.contact_email and card.contact_phone %} · {% endif %}{{card.contact_phone}}</div>{% endif %}
+                    <div class="card-meta"><span class="badge badge-funding">Funding</span><span class="badge badge-urgency-{{card.urgency}}">{{card.urgency}}</span>{% if card.deadline %}<span class="badge badge-deadline">📅 {{card.deadline}}</span>{% endif %}{% if card.amount %}<span class="badge badge-amount">{{card.amount}}</span>{% endif %}{% for loc in card.locations %}<span class="badge badge-location">{{loc}}</span>{% endfor %}</div>
+                    {% if card.link %}<a href="{{card.link}}" target="_blank" rel="noopener" class="card-action">View opportunity →</a>{% endif %}
+                </div>{% endfor %}</div>
+            {% else %}<div class="empty-state">No funding opportunities in this category.</div>{% endif %}
+        </div>{% endfor %}
+    </div>
+
+    <!-- FUNDING > EMAIL -->
+    <div class="section" id="sec-funding-email">
+        <div class="cat-tabs" id="tabs-funding-email">{% for cat in categories %}<button class="cat-btn {% if loop.first %}active{% endif %}" onclick="switchCat('funding-email',{{loop.index0}},this)">{{cat}}<span class="count">{{funding_email_counts[cat]}}</span></button>{% endfor %}</div>
+        {% for cat in categories %}
+        <div class="cat-content funding-email-cat {% if loop.first %}active{% endif %}" id="funding-email-cat-{{loop.index0}}">
+            {% if grouped[cat].funding.email %}<div class="cards">{% for card in grouped[cat].funding.email %}
+                <div class="card urgency-{{card.urgency}}" id="{{card.dom_id}}" data-category="{{card.category}}" data-locations="{{card.locations|join(',')|lower}}">
+                    <div class="card-title">{% if card.link %}<a href="{{card.link}}" target="_blank" rel="noopener">{{card.title}}</a>{% else %}{{card.title}}{% endif %}</div>
+                    <div class="card-gist" data-lang="en">{{card.summary_en}}</div><div class="card-gist" data-lang="de">{{card.summary_de}}</div>
+                    {% if card.deadline %}<div class="funding-detail"><strong>Deadline:</strong> {{card.deadline}}</div>{% endif %}
+                    {% if card.amount %}<div class="funding-detail"><strong>Amount:</strong> {{card.amount}}</div>{% endif %}
+                    {% if card.eligibility_en %}<ul class="card-keypoints" data-lang="en">{% for p in card.eligibility_en %}<li>{{p}}</li>{% endfor %}</ul>{% endif %}
+                    {% if card.eligibility_de %}<ul class="card-keypoints" data-lang="de">{% for p in card.eligibility_de %}<li>{{p}}</li>{% endfor %}</ul>{% endif %}
+                    {% if card.contact_email or card.contact_phone %}<div class="contact-info">📞 Contact: {{card.contact_email}}{% if card.contact_email and card.contact_phone %} · {% endif %}{{card.contact_phone}}</div>{% endif %}
+                    <div class="card-meta"><span class="badge badge-funding">Funding (Email)</span><span class="badge badge-email-source">From: {{card.source}}</span><span class="badge badge-urgency-{{card.urgency}}">{{card.urgency}}</span>{% if card.deadline %}<span class="badge badge-deadline">📅 {{card.deadline}}</span>{% endif %}{% for loc in card.locations %}<span class="badge badge-location">{{loc}}</span>{% endfor %}</div>
+                    {% if card.link %}<a href="{{card.link}}" target="_blank" rel="noopener" class="card-action">View opportunity →</a>{% endif %}
+                </div>{% endfor %}</div>
+            {% else %}<div class="empty-state">No funding opportunities from email in this category.</div>{% endif %}
+        </div>{% endfor %}
+    </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+    function setLang(lang) {
+        if (lang === 'de') document.body.classList.add('show-de');
+        else document.body.classList.remove('show-de');
+        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+        document.getElementById('btn-de').classList.toggle('active', lang === 'de');
+    }
+    var currentTop = 'news', currentSub = {news:'articles', funding:'scraped'};
+    var categories = {{ categories | tojson }};
+    function switchTop(top, btn) {
+        document.querySelectorAll('.top-nav-btn').forEach(function(b){b.classList.remove('active')});
+        btn.classList.add('active'); currentTop = top;
+        document.getElementById('subnav-news').style.display = (top==='news')?'flex':'none';
+        document.getElementById('subnav-funding').style.display = (top==='funding')?'flex':'none';
+        document.getElementById('map-wrap').style.display = (top==='news')?'block':'none';
+        showSection();
+    }
+    function switchSub(top, sub, btn) {
+        var nav = document.getElementById('subnav-'+top);
+        nav.querySelectorAll('.sub-nav-btn').forEach(function(b){b.classList.remove('active')});
+        btn.classList.add('active'); currentSub[top] = sub; showSection();
+    }
+    function showSection() {
+        document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+        var id = 'sec-'+currentTop+'-'+currentSub[currentTop];
+        var el = document.getElementById(id);
+        if (el) el.classList.add('active');
+        if (currentTop==='news' && window.leafletMap) setTimeout(function(){window.leafletMap.invalidateSize();},100);
+    }
+    function switchCat(prefix, idx, btn) {
+        var tabs = document.getElementById('tabs-'+prefix);
+        tabs.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('active')});
+        btn.classList.add('active');
+        document.querySelectorAll('.'+prefix+'-cat').forEach(function(c){c.classList.remove('active')});
+        document.getElementById(prefix+'-cat-'+idx).classList.add('active');
+    }
+    function navigateToCard(domId, category, subTab) {
+        // Switch top-level to news or funding based on sub_tab
+        var topBtns = document.querySelectorAll('.top-nav-btn');
+        if (subTab === 'articles' || subTab === 'email') {
+            switchTop('news', topBtns[0]);
+            var subBtns = document.querySelectorAll('#subnav-news .sub-nav-btn');
+            var subIdx = (subTab === 'email') ? 1 : 0;
+            switchSub('news', subTab, subBtns[subIdx]);
+            var prefix = 'news-' + subTab;
+        } else {
+            switchTop('funding', topBtns[1]);
+            var subBtns = document.querySelectorAll('#subnav-funding .sub-nav-btn');
+            var subIdx = (subTab === 'email') ? 1 : 0;
+            switchSub('funding', subTab, subBtns[subIdx]);
+            var prefix = 'funding-' + subTab;
+        }
+        var catIdx = categories.indexOf(category);
+        if (catIdx < 0) catIdx = categories.length - 1;
+        var catBtns = document.querySelectorAll('#tabs-'+prefix+' .cat-btn');
+        if (catBtns[catIdx]) switchCat(prefix, catIdx, catBtns[catIdx]);
+        setTimeout(function(){
+            var card = document.getElementById(domId);
+            if (card) { card.scrollIntoView({behavior:'smooth',block:'center'}); card.classList.add('card-highlight'); setTimeout(function(){card.classList.remove('card-highlight');},2500); }
+        }, 150);
+    }
+    try {
+        if (typeof L !== 'undefined') {
+            var leafletMap = L.map('map').setView([-3.3, 29.9], 6);
+            window.leafletMap = leafletMap;
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:12}).addTo(leafletMap);
+            var uc={high:'#e53935',medium:'#fb8c00',low:'#9e9e9e'};
+            var markers = {{ markers | tojson }};
+            for (var i=0;i<markers.length;i++){(function(m){
+                var color=uc[m.urgency]||'#9e9e9e';
+                var icon=L.divIcon({className:'x',html:'<div style="width:16px;height:16px;background:'+color+';border:2px solid #fff;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.3)"></div>',iconSize:[16,16],iconAnchor:[8,8]});
+                var popupHtml='<div class="marker-popup"><strong>'+m.name+'</strong>';
+                if(m.cards&&m.cards.length){for(var j=0;j<m.cards.length&&j<5;j++){var c=m.cards[j];var g=c.gist?(c.gist.substring(0,80)+(c.gist.length>80?'...':'')):'';popupHtml+='<div class="popup-item" onclick="navigateToCard(\''+c.dom_id+'\',\''+c.category.replace(/'/g,"\\'")+'\',\''+c.sub_tab+'\')"><div class="popup-title">'+c.title+'</div>';if(g)popupHtml+='<div class="popup-gist">'+g+'</div>';popupHtml+='</div>';}if(m.cards.length>5)popupHtml+='<div style="color:#888;font-size:11px;padding-top:4px">+'+(m.cards.length-5)+' more</div>';}
+                popupHtml+='</div>';
+                var marker=L.marker([m.lat,m.lng],{icon:icon}).addTo(leafletMap);
+                marker.bindPopup(popupHtml,{maxWidth:300});
+                marker.on('click',function(){if(m.cards&&m.cards.length&&m.cards[0].dom_id){setTimeout(function(){navigateToCard(m.cards[0].dom_id,m.cards[0].category,m.cards[0].sub_tab);},300);}});
+            })(markers[i]);}
+        }
+    } catch(e){console.error('Map error:',e);}
+    </script>
+</body>
+</html>

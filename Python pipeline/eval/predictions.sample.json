@@ -1,0 +1,17 @@
+{
+  "_comment": "Sample model outputs so `scorecard.py` produces a real scorecard in replay mode without an API key. A few entries are intentionally wrong (news-03 category, news-06 urgency, fund-02 deadline, news-07 locations) to demonstrate the harness catches errors. Regenerate with `scorecard.py --live --dump`.",
+  "predictions": {
+    "news-01": { "category": "Stray Population Infrastructure", "urgency": "high", "locations": ["Lake Tanganyika"] },
+    "news-02": { "category": "Emergency Relief Hub", "urgency": "high", "locations": ["Bujumbura"] },
+    "news-03": { "category": "Uncategorized", "urgency": "low", "locations": ["Burundi"] },
+    "news-04": { "category": "Wildlife Trade Defenses", "urgency": "high", "locations": ["Great Lakes Region"] },
+    "news-05": { "category": "Gesundheit", "urgency": "high", "locations": ["Karuzi"] },
+    "news-06": { "category": "Kommunale Entwicklung und Umweltschutz", "urgency": "medium", "locations": ["Gitega"] },
+    "news-07": { "category": "Kinder- und Frauenrechte", "urgency": "high", "locations": [] },
+    "fund-01": { "category": "Uncategorized", "deadline": "2026-07-10", "amount": "50.000 EUR", "eligibility": ["Deutsche Vereine antragsberechtigt"], "locations": ["Ostafrika"] },
+    "fund-02": { "category": "Kinder- und Frauenrechte", "deadline": "2026-08-16", "amount": "80.000 EUR", "eligibility": ["Traegerorganisationen in Ostafrika"], "locations": ["Ostafrika"] },
+    "fund-03": { "category": "Gesundheit", "deadline": "2026-11-15", "amount": "150.000 EUR", "eligibility": ["German applicant possible"], "locations": ["East Africa"] },
+    "fund-04": { "category": "Bildung", "deadline": null, "amount": "2.500 EUR", "eligibility": ["Kleine Vereine"], "locations": [] },
+    "fund-05": { "category": "Emergency Relief Hub", "deadline": "2026-07-25", "amount": "200.000 EUR", "eligibility": ["NGOs mit Ostafrika-Bezug"], "locations": ["Ostafrika"] }
+  }
+}

@@ -1,0 +1,25 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Generated data containing real personal contact info
+**/data/items.json
+**/data/sent_emails_log.json
+**/data/insights_cache.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Generated CSV data containing real personal contact info
+*.csv
+
+# OS
+.DS_Store
+Thumbs.db
