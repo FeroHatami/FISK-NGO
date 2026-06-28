@@ -1,4 +1,4 @@
-# FISK — NGO Intelligence Hub (Lumen)
+# FISK — NGO Intelligence Hub 
 
 An AI-powered press-monitoring, funding-research, and outreach platform for NGOs working in Burundi and in global animal welfare (built for **Welttierschutzgesellschaft / WTG** and **Burundikids e.V.**).
 
